@@ -60,4 +60,31 @@ class TestDate {
         assertEquals(16, res4.day)
         val res5 = sut + 350000   // Throw StackOverflow if not tailrec
     }
+    @Test fun `Compare equality of dates`() {
+        val sut = Date(2023, 9, 14)
+        val sut2 = sut
+        assertEquals(sut,sut2)  // -> assertTrue( sut == sut2 )
+        val sut3 = Date(2023, 9, 14)
+        assertEquals(sut, sut3)
+        val sut4 = Date(2023, 10, 14)
+        assertNotEquals(sut, sut4)
+        val sut5: Any = "hello"
+        assertNotEquals(sut, sut5)
+        val sut6: Any? = null
+        assertNotEquals(sut, sut6)
+        val sut7: Date? = null
+        assertNotEquals(sut7, sut)
+        assertEquals(sut.hashCode(), sut3.hashCode())
+        assertNotEquals(sut.hashCode(), sut4.hashCode())
+    }
+    @Test fun `Relative compare between dates`() {
+        val sut = Date(2023, 9, 14)
+        val sut2 = Date(2023, 9, 15)
+        assertTrue(sut < sut2)
+        assertTrue(sut <= sut2)
+        assertTrue(sut2 > sut)
+        assertTrue(sut2 >= sut)
+        assertTrue(sut2 >= sut2)
+        assertTrue(sut2 <= sut2)
+    }
 }

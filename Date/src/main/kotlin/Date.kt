@@ -1,11 +1,23 @@
 
 
-class Date(val year: Int, val month: Int = 1, val day: Int = 1){
+class Date(val year: Int, val month: Int = 1, val day: Int = 1): Any() {
     init {
-        require(year in 1582..3000){ "year must be in range 1582..3000" }
-        require(month in 1..12){ "month must be in range 1..12" }
-        require(day in 1..lastDayOfMonth){ "day must be in range 1..$lastDayOfMonth" }
+        require(year in 1582..3000) { "year must be in range 1582..3000" }
+        require(month in 1..12) { "month must be in range 1..12" }
+        require(day in 1..lastDayOfMonth) { "day must be in range 1..$lastDayOfMonth" }
     }
+
+    override fun equals(other: Any?) = other is Date &&
+        year == other.year && month == other.month && day == other.day
+
+    override fun hashCode() = year * (12*31) + month * 31 + day
+
+    operator fun compareTo(other: Date): Int =
+        when {
+            year != other.year -> year - other.year
+            month != other.month -> month - other.month
+            else -> day - other.day
+        }
 }
 
 val Date.leapYear get() = year.isLeapYear
@@ -33,3 +45,4 @@ tailrec fun Date.addDays(days: Int): Date {
         nextDate.addDays(d - lastDayOfMonth - 1)
     }
 }
+
