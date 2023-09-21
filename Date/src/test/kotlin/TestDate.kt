@@ -87,4 +87,10 @@ class TestDate {
         assertTrue(sut2 >= sut2)
         assertTrue(sut2 <= sut2)
     }
+    @Test fun `Text representation of Dates`() {
+        val sut = Date(2023, 9, 4)
+        assertEquals("2023-09-04", sut.toString())
+        assertEquals("2023-09-04", "$sut")
+    }
+
 }

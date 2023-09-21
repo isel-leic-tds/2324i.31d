@@ -1,23 +1,28 @@
 
 
-class Date(val year: Int, val month: Int = 1, val day: Int = 1): Any() {
-    init {
+private const val DAY_BITS = 5
+private const val MONTH_BITS = 4
+
+@JvmInline
+value class Date private constructor(private val bits: Int) {
+    constructor(year: Int, month: Int = 1, day: Int = 1) : this(
+        year shl (DAY_BITS+MONTH_BITS) or (month shl DAY_BITS) or day
+    ) {
         require(year in 1582..3000) { "year must be in range 1582..3000" }
         require(month in 1..12) { "month must be in range 1..12" }
         require(day in 1..lastDayOfMonth) { "day must be in range 1..$lastDayOfMonth" }
     }
+    val day: Int get() = bits and ((1 shl DAY_BITS)-1)
+    val month: Int get() = (bits shr DAY_BITS) and ((1 shl MONTH_BITS)-1)
+    val year: Int get() = bits shr (DAY_BITS+MONTH_BITS)
 
-    override fun equals(other: Any?) = other is Date &&
-        year == other.year && month == other.month && day == other.day
+//    override fun equals(other: Any?) = other is Date && bits == other.bits
+//    override fun hashCode() = bits
 
-    override fun hashCode() = year * (12*31) + month * 31 + day
+    override fun toString() : String = "$year-%02d-%02d".format(month, day)
+        // this::class.simpleName + "@" + hashCode().toString(16)
 
-    operator fun compareTo(other: Date): Int =
-        when {
-            year != other.year -> year - other.year
-            month != other.month -> month - other.month
-            else -> day - other.day
-        }
+    operator fun compareTo(other: Date): Int = bits - other.bits
 }
 
 val Date.leapYear get() = year.isLeapYear
