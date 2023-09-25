@@ -7,7 +7,7 @@ fun main() {
     val stk = MutableStack<Char>()
     stk.push('A')
     stk.push('B')
-    print(stk.top)
+    print(stk.top)  // Output: B
     stk.push('C')
     while( ! stk.isEmpty() ) {
         val elem: Char = stk.pop()

@@ -20,4 +20,18 @@ class MutableStackTest {
         assertEquals("ISEL", stk.pop())
         assertTrue(stk.isEmpty())
     }
+    @Test fun `equality of stacks`() {
+        val stk1 = MutableStack<Int>()
+        stk1.push(10)
+        stk1.push(20)
+        val stk2 = MutableStack<Int>()
+        stk2.push(10)
+        stk2.push(20)
+        //assertTrue(stk1.equals(stk2))
+        assertEquals(stk1, stk2)
+        assertEquals(stk1.hashCode(), stk2.hashCode())
+        stk2.push(30)
+        assertNotEquals(stk1, stk2)
+        assertNotEquals(stk1.hashCode(), stk2.hashCode())
+    }
 }
