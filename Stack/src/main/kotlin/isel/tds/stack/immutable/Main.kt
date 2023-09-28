@@ -13,11 +13,11 @@ fun main() {
     while( ! stk.isEmpty() ) {
         print(stk.top)
         stk = stk.pop()
-        if (! stk.isEmpty()) {
+        /*if (! stk.isEmpty()) {
             val res = stk.pop2()
             print(res.first)
             stk = res.second
-        }
+        }*/
     }
     // Output: BCBA
 }

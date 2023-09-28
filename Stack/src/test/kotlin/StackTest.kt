@@ -3,7 +3,7 @@ import isel.tds.stack.immutable.*
 
 class StackTest {
     @Test fun `empty stack conditions`() {
-        val stk = Stack<Int>()
+        val stk: Stack<Int> = Stack()
         assertTrue(stk.isEmpty())
         assertFailsWith<NoSuchElementException> { stk.top }
         assertFailsWith<NoSuchElementException> { stk.pop() }
