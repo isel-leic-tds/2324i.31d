@@ -4,7 +4,7 @@ package isel.tds.stack.immutable
  * Example that uses the Stack Immutable.
  */
 fun main() {
-    var stk = Stack<Char>().push('A').push('B')
+    var stk = stackOf('A','B')
     println(stk.top)  // Output: B
     stk = stk.push('C')
     print("ForEach:")
@@ -19,5 +19,17 @@ fun main() {
             stk = res.second
         }*/
     }
+    println( sizeOf(Stack<Char>()) )
+    println( sizeOf(Stack<Int>().push(3).push(5)) )
     // Output: BCBA
+}
+
+fun <T> sizeOf(s: Stack<T>): Int {
+    var size = 0
+    val it: Iterator<T> = s.iterator()
+    while( it.hasNext() ) {
+        ++size
+        it.next()
+    }
+    return size
 }

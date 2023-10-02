@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide empty members
+
+interface Iterable<T> {
+    iterator(): Iterator<T>
+}
+
+interface Stack<T> {
+    push(T): Stack<T>
+    pop(): Stack<T>
+    top: T
+    isEmpty(): boolean
+}
+
+Iterable <|-- Stack
+
+class EmptyStack <<(O,orange) object>>{
+    push(Any): Stack<Any>
+    pop() throws
+    top throws
+    isEmpty() = true
+    iterator() = Iterator<Nothing>
+}
+Stack <|.. EmptyStack : T=Any
+
+class Node<T> {
+   elem: T
+}
+Node --> "?" Node : next
+
+class NoEmptyStack<T> {
+    push(T): Stack<T>
+    pop(): Stack<T>
+    top: T
+    isEmpty() = false
+    iterator() = Iterator<T>
+    equals(Any?): Boolean
+    hashCode(): Int
+}
+Stack <|.. NoEmptyStack
+Node <-- NoEmptyStack : head
+@enduml
