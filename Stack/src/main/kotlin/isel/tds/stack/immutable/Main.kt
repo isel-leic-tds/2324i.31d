@@ -13,15 +13,10 @@ fun main() {
     while( ! stk.isEmpty() ) {
         print(stk.top)
         stk = stk.pop()
-        /*if (! stk.isEmpty()) {
-            val res = stk.pop2()
-            print(res.first)
-            stk = res.second
-        }*/
     }
-    println( sizeOf(Stack<Char>()) )
-    println( sizeOf(Stack<Int>().push(3).push(5)) )
-    // Output: BCBA
+    print( sizeOf(Stack<Char>()) )
+    print( sizeOf(Stack<Int>().push(3).push(5)) )
+    // Output: BCBA02
 }
 
 fun <T> sizeOf(s: Stack<T>): Int {
