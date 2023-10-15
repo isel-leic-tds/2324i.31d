@@ -1,0 +1,29 @@
+@startuml
+
+hide empty members
+
+interface Score {
+   placard: String
+   isGame: Boolean
+   next(:Player): Score
+}
+class Deuce <<(O,Orange) Object>>
+
+Score <|.. Game
+Score <|.. Advantage
+Score <|.. Deuce
+Score <|.. PointsScore
+Score <|.. FortyScore
+
+
+enum Player
+Player --o Game :winner
+Player --o Advantage :player
+Player --o FortyScore :player
+
+enum Points
+Points --o PointsScore :pointsA
+Points --o PointsScore :pointsB
+Points --o FortyScore: pointsOther
+
+@enduml

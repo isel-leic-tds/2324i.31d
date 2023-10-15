@@ -1,6 +1,8 @@
 package pt.isel.tds.tennis
 
-enum class Player{ A, B }
+enum class Player{ A, B;
+    val other get() = if(this==A) B else A
+}
 
 fun Char.toPlayerOrNull(): Player? = when(this) {
     'A','a' -> Player.A

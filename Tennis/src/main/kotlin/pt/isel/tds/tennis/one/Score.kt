@@ -1,13 +1,14 @@
 package pt.isel.tds.tennis.one
 
 import pt.isel.tds.tennis.Player
+import pt.isel.tds.tennis.one.Points.*
 
-/**
- * Valid points in a tennis game for each player.
- */
-private val validPoints = listOf(0,15,30,40,45)
+enum class Points(val value: Int) {
+    LOVE(0), FIFTEEN(15), THIRTY(30), FORTY(40), GAME(45)
+}
 
-private fun Int.next() = validPoints[validPoints.indexOf(this)+1]
+
+private fun Points.next() = Points.entries[ordinal+1]
 
 /**
  * Represents the score of a tennis game.
@@ -17,36 +18,35 @@ private fun Int.next() = validPoints[validPoints.indexOf(this)+1]
  * Score(45,40) -> Advantage A and Score(40,45) -> Advantage B
  * Score(45,?) -> Game A and Score(?,45) -> Game B , where ?!=40
  */
-class Score(val pointsA: Int, val pointsB: Int) {
+class Score(val pointsA: Points, val pointsB: Points) {
     init {
-        require(pointsA in validPoints)  // Verification in runtime
-        require(pointsB in validPoints)
+        require(pointsA!=GAME || pointsB!=GAME)
     }
     val isGame get() =
-        pointsA==45 && pointsB!=40 ||
-        pointsB==45 && pointsA!=40
+        pointsA==GAME && pointsB!=FORTY ||
+        pointsB==GAME && pointsA!=FORTY
     private val isAdvantage get() =
-        pointsA==45 && pointsB==40 ||
-        pointsB==45 && pointsA==40
-    private fun player45() = if(pointsA==45) Player.A else Player.B
+        pointsA==GAME && pointsB==FORTY ||
+        pointsB==GAME && pointsA==FORTY
+    private fun player45() = if(pointsA==GAME) Player.A else Player.B
     val placard get() =
         when {
-            pointsA==40 && pointsB==40 -> "Deuce"
+            pointsA==FORTY && pointsB==FORTY -> "Deuce"
             isGame -> "Game ${player45()}"
             isAdvantage -> "Advantage ${player45()}"
-            else -> "$pointsA - $pointsB"
+            else -> "${pointsA.value} - ${pointsB.value}"
         }
     fun next(winner: Player): Score =
         when {
             isGame -> error("Game is over")
             isAdvantage ->
                 if (winner==player45())
-                    if (winner== Player.A) Score(45,0) else Score(0,45)
-                else Score(40,40)
+                    if (winner== Player.A) Score(GAME,LOVE) else Score(LOVE,GAME)
+                else Score(FORTY,FORTY)
             else ->
                 if (winner== Player.A) Score(pointsA.next(), pointsB)
                 else Score(pointsA, pointsB.next())
         }
 }
 
-val initialScore = Score(0,0)
+val initialScore = Score(LOVE,LOVE)
