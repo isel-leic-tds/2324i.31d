@@ -11,7 +11,7 @@ import pt.isel.tds.ttt.model.*
  */
 fun Board.show() {
     moves.forEachIndexed { index, c ->
-        print(" $c ")
+        print(" ${c ?: ' '} ")
         if (index % 3 == 2) {
             if (index < 8) println("\n---+---+---")
         }
@@ -19,8 +19,7 @@ fun Board.show() {
     }
     println()
     when {
-        isWinner('X') -> println("winner: X")
-        isWinner('O') -> println("winner: O")
+        winner!=null -> println("winner: $winner")
         isFull() -> println("Draw")
         else -> println("turn: $turn")
     }
