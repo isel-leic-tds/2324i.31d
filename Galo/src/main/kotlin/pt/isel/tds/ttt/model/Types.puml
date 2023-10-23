@@ -1,0 +1,19 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide empty members
+
+class Board
+enum Player {
+  X, O
+}
+class Position {
+    index: Int
+}
+Board --> "?" Player : winner
+Board --> Player : turn
+Board --> "9" Player : moves
+Board ..> Position : <<uses>>
+
+
+@enduml

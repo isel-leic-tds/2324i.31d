@@ -10,6 +10,8 @@ package pt.isel.tds.ttt.model
 value class Position private constructor(val index: Int) {
     val row: Int get() = index / BOARD_SIZE
     val col: Int get() = index % BOARD_SIZE
+    val backSlash: Boolean get() = row == col
+    val slash: Boolean get() = row + col == BOARD_SIZE - 1
 
     companion object {
         // All permitted positions
