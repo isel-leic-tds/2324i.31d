@@ -11,21 +11,21 @@ import pt.isel.tds.ttt.view.*
  * Exceptions are caught and the error message is printed.
  */
 fun main() {
-    var board: Board? = null
+    var game = Game()
     val commands: Map<String,Command> = getCommands()
     while(true) {
         val (name,args) = readCommand()
         val cmd = commands[name]
         if (cmd==null) println("Unknown command")
         else try {
-            board = cmd.execute(args, board)
+            game = cmd.execute(args, game)
             if (cmd.isToFinish) break
         } catch (e: IllegalArgumentException) {
             println("${e.message}\nUse: $name ${cmd.argsSyntax}")
         } catch (e: IllegalStateException) {
             println(e.message)
         }
-        board?.show()
+        game.show()
     }
 }
 

@@ -54,5 +54,6 @@ private fun BoardRun.winnerIn(moves: Moves, pos: Position): Player? = turn.takeI
 
 /**
  * Creates the initial board.
+ * @param turn The player to first play.
  */
-fun Board() = BoardRun(emptyMap(), Player.X)
+fun Board(turn: Player= Player.X) = BoardRun(emptyMap(), turn)

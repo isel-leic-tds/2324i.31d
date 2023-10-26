@@ -26,3 +26,17 @@ fun Board.show() {
         is BoardRun -> println("turn: $turn")
     }
 }
+
+/**
+ * Show of the game state is delegated to the board.
+ */
+fun Game.show() = board?.show()
+
+/**
+ * Shows the score of the game.
+ */
+fun Game.showScore() {
+    score.forEach { (player, score) ->
+        println("${player?:"Draw"}: $score")
+    }
+}

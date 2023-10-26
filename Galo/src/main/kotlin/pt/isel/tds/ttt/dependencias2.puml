@@ -1,0 +1,13 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+[Main]
+
+package view
+
+package model
+
+[Main] --> [view]
+[Main] --> [model]
+[view] --> [model]
+@enduml
