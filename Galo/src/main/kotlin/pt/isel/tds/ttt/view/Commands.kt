@@ -1,5 +1,6 @@
 package pt.isel.tds.ttt.view
 
+import pt.isel.tds.storage.Storage
 import pt.isel.tds.ttt.model.*
 
 /**
@@ -28,9 +29,16 @@ val Play = Command("<position>") { args, game ->
 /**
  * Returns a map of all commands supported by the application.
  */
-fun getCommands(): Map<String, Command> = mapOf(
+fun getCommands(st: Storage<String, Game>): Map<String, Command> = mapOf(
     "NEW" to Command { _, game -> game.newBoard() },
     "PLAY" to Play,
     "EXIT" to Command(isToFinish= true),
-    "SCORE" to Command { _, game -> game.also { it.showScore() } }
+    "SCORE" to Command { _, game -> game.also { it.showScore() } },
+    "SAVE" to Command("<name>") { args, game ->
+        require(args.isNotEmpty()) { "Missing name" }
+        val name = args[0]
+        require(name.isNotEmpty()) { "Name must not be empty" }
+        st.create(name, game)
+        game
+    },
 )
