@@ -41,4 +41,18 @@ fun getCommands(st: Storage<String, Game>): Map<String, Command> = mapOf(
         st.create(name, game)
         game
     },
+    "LOAD" to Command("<name>") { args, game ->
+        require(args.isNotEmpty()) { "Missing name" }
+        val name = args[0]
+        require(name.isNotEmpty()) { "Name must not be empty" }
+        st.read(name) ?: error("$name not found")
+    },
+    /* TODO: Uncomment the following lines after implementing storageCommand
+     **      and remove the previous implementations of SAVE and LOAD.
+    "SAVE" to storageCommand { name, game ->
+        game.also{ st.create(name, it) }
+    },
+    "LOAD" to storageCommand { name, _ ->
+        st.read(name) ?: error("$name not found")
+    } */
 )

@@ -21,6 +21,7 @@ value class Position private constructor(val index: Int) {
             return values[idx]
         }
     }
+    override fun toString(): String = "$index"
 }
 
 fun Int.toPosition(): Position = Position(this)

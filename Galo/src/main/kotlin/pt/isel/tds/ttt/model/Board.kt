@@ -11,10 +11,21 @@ typealias Moves = Map<Position,Player>
  * @property turn The player to play, if in RUN state.
  * @property winner The winner, if in WIN state
  */
-sealed class Board(val moves: Moves)
+sealed class Board(val moves: Moves){
+    override fun equals(other: Any?): Boolean {
+        return other is Board && moves == other.moves && equalsRemain(other)
+    }
+    override fun hashCode(): Int = moves.hashCode() + this::class.simpleName.hashCode()
+}
 class BoardRun(moves: Moves, val turn: Player): Board(moves)
 class BoardWin(moves: Moves, val winner: Player): Board(moves)
 class BoardDraw(moves: Moves): Board(moves)
+
+fun Board.equalsRemain(other: Board) = when(this) {
+    is BoardRun -> other is BoardRun && turn == other.turn
+    is BoardWin -> other is BoardWin && winner == other.winner
+    is BoardDraw -> other is BoardDraw
+}
 
 /**
  * Plays a move in the board.
