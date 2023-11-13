@@ -21,7 +21,8 @@ fun main() {
         val cmd = commands[name]
         if (cmd==null) println("Unknown command")
         else try {
-            game = cmd.execute(args, game)
+            game = with(cmd){ game.execute(args) }
+            //game = cmd.execute(game,args)
             if (cmd.isToFinish) break
         } catch (e: IllegalArgumentException) {
             println("${e.message}\nUse: $name ${cmd.argsSyntax}")

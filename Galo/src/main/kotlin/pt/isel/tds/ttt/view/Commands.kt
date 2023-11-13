@@ -13,46 +13,42 @@ import pt.isel.tds.ttt.model.*
 class Command(
     val argsSyntax:String = "",
     val isToFinish: Boolean = false,
-    val execute: (args:List<String>,Game)->Game = { _, g -> g }
+    val execute: Game.(args:List<String>)->Game = { this }
 )
 
 /**
  * Command to play a move in the game.
  * The position is given as a single integer.
  */
-val Play = Command("<position>") { args, game ->
+val Play = Command("<position>") { args ->
     require(args.isNotEmpty()) { "Missing position" }
     val pos = requireNotNull(args[0].toPositionOrNull()) { "Position ${args[0]} invalid"}
-    game.play(pos)
+    play(pos)
 }
+
+/**
+ * Function to create a command that have a name as argument.
+ */
+private fun storageCommand(exec: (String, Game) -> Game) =
+    Command("<name>") { args ->
+        require(args.isNotEmpty()) { "Missing name" }
+        val name = args[0]
+        require(name.isNotEmpty()) { "Name must not be empty" }
+        exec(name, this)
+    }
 
 /**
  * Returns a map of all commands supported by the application.
  */
 fun getCommands(st: Storage<String, Game>): Map<String, Command> = mapOf(
-    "NEW" to Command { _, game -> game.newBoard() },
+    "NEW" to Command { newBoard() },
     "PLAY" to Play,
     "EXIT" to Command(isToFinish= true),
-    "SCORE" to Command { _, game -> game.also { it.showScore() } },
-    "SAVE" to Command("<name>") { args, game ->
-        require(args.isNotEmpty()) { "Missing name" }
-        val name = args[0]
-        require(name.isNotEmpty()) { "Name must not be empty" }
-        st.create(name, game)
-        game
-    },
-    "LOAD" to Command("<name>") { args, game ->
-        require(args.isNotEmpty()) { "Missing name" }
-        val name = args[0]
-        require(name.isNotEmpty()) { "Name must not be empty" }
-        st.read(name) ?: error("$name not found")
-    },
-    /* TODO: Uncomment the following lines after implementing storageCommand
-     **      and remove the previous implementations of SAVE and LOAD.
+    "SCORE" to Command { showScore(); this },
     "SAVE" to storageCommand { name, game ->
         game.also{ st.create(name, it) }
     },
     "LOAD" to storageCommand { name, _ ->
         st.read(name) ?: error("$name not found")
-    } */
+    }
 )
