@@ -40,3 +40,12 @@ fun Game.showScore() {
         println("${player?:"Draw"}: $score")
     }
 }
+
+fun Match.show() {
+    if (this !is MatchRun)
+        println("Match not started")
+    else {
+        println("Match: $id - $sidePlayer")
+        game.show()
+    }
+}

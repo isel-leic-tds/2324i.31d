@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide empty members
+
+class Board {
+   moves: Map<Position, Player>
+}
+enum Player {
+  X, O
+}
+Board <|-- BoardRun
+Board <|-- BoardWin
+Board <|-- BoardDraw
+
+'<> Move
+'Board --> "*" Move : moves
+'Move -up-> Position : key
+'Move -> Player : value
+
+BoardWin -up-> Player : winner
+BoardRun -up-> Player : turn
+
+class Game {
+  score: Map<Player?, Int>
+}
+Game *--> Board : board
+Game --> Player : firstPlayer
+
+interface MatchStorage
+Match o-> MatchStorage : ms
+
+Match <|-- MatchRun
+MatchRun *--> Game : game
+MatchRun --> Player : sidePlayer
+class MatchRun {
+  id: String
+}
+@enduml

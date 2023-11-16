@@ -1,6 +1,5 @@
 package pt.isel.tds.ttt.view
 
-import pt.isel.tds.storage.Storage
 import pt.isel.tds.ttt.model.*
 
 /**
@@ -13,7 +12,7 @@ import pt.isel.tds.ttt.model.*
 class Command(
     val argsSyntax:String = "",
     val isToFinish: Boolean = false,
-    val execute: Game.(args:List<String>)->Game = { this }
+    val execute: Match.(args:List<String>)->Match = { this }
 )
 
 /**
@@ -40,15 +39,18 @@ private fun storageCommand(exec: (String, Game) -> Game) =
 /**
  * Returns a map of all commands supported by the application.
  */
-fun getCommands(st: Storage<String, Game>): Map<String, Command> = mapOf(
+fun getCommands(): Map<String, Command> = mapOf(
     "NEW" to Command { newBoard() },
     "PLAY" to Play,
     "EXIT" to Command(isToFinish= true),
     "SCORE" to Command { showScore(); this },
-    "SAVE" to storageCommand { name, game ->
+    "START" to storageCommand { name, game ->
         game.also{ st.create(name, it) }
     },
-    "LOAD" to storageCommand { name, _ ->
+    "JOIN" to storageCommand { name, _ ->
+        st.read(name) ?: error("$name not found")
+    },
+    "REFRESH" to storageCommand { name, _ ->
         st.read(name) ?: error("$name not found")
     }
 )
