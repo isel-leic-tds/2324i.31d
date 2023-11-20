@@ -2,8 +2,23 @@ package pt.isel.tds.ttt.model
 
 import pt.isel.tds.storage.Storage
 
-typealias MatchStorage = Storage<String, Game>
+typealias MatchStorage = Storage<Name, Game>
 
+/**
+ * Represents a name of a match.
+ * Must be a nonempty string with only letters and digits.
+ */
+@JvmInline
+value class Name(private val value: String) {
+    init {
+        require( isValid(value) ) { "Invalid name $value" }
+    }
+    override fun toString() = value
+    companion object {
+        fun isValid(value: String) =
+            value.isNotBlank() && value.all { it.isLetterOrDigit() }
+    }
+}
 /**
  * Represents a match using a remote storage to save the game state.
  * @property ms the storage of matches.
@@ -18,23 +33,29 @@ open class Match(val ms: MatchStorage)
  */
 class MatchRun(
     ms: MatchStorage,
-    val id: String,
+    val id: Name,
     val sidePlayer: Player,
     val game: Game,
 ) : Match(ms)
 
 /**
- * Make a new Match with the new board state.
+ * Property to access the game state.
  */
-fun MatchRun.copy(game: Game) = MatchRun(ms, id, sidePlayer, game)
+val Match.gameRun: Game? get() = (this as? MatchRun)?.game
 
 /**
- * Start a new match with the first board.
+ * Make a new Match with the new board state.
+ */
+private fun MatchRun.copy(game: Game) = MatchRun(ms, id, sidePlayer, game)
+
+/**
+ * Start a new match with the [name] and with the first board.
  * The player of this side is X.
  */
-fun Match.start(name: String): Match {
+fun Match.start(name: Name): Match {
     val game = Game().newBoard()
     ms.create(name, game)
+    deleteIfIsOwner()
     return MatchRun(ms, name, Player.X, game)
 }
 
@@ -42,8 +63,9 @@ fun Match.start(name: String): Match {
  * Join to a match with the [name].
  * The player of this side is O.
  */
-fun Match.join(name: String): Match {
+fun Match.join(name: Name): Match {
     val game = ms.read(name) ?: error("Match $name not found")
+    deleteIfIsOwner()
     return MatchRun(ms, name, Player.O, game)
 }
 
@@ -79,4 +101,19 @@ fun Match.play(pos: Position) = runOper {
  */
 fun Match.refresh() = runOper {
     (ms.read(id) as Game).also { check(it!=game) { "Game not changed" } }
+}
+
+/**
+ * Auxiliary function to delete the current match in store
+ */
+private fun Match.deleteIfIsOwner(){
+    if (this is MatchRun && sidePlayer==Player.X)
+        ms.delete(id)
+}
+
+/**
+ * Called when the application is closed.
+ */
+fun Match.exit() {
+    deleteIfIsOwner()
 }

@@ -28,12 +28,10 @@ val Play = Command("<position>") { args ->
 /**
  * Function to create a command that have a name as argument.
  */
-private fun storageCommand(exec: (String, Game) -> Game) =
+private fun storageCommand(exec: Match.(Name) -> Match) =
     Command("<name>") { args ->
         require(args.isNotEmpty()) { "Missing name" }
-        val name = args[0]
-        require(name.isNotEmpty()) { "Name must not be empty" }
-        exec(name, this)
+        exec(Name(args[0]))
     }
 
 /**
@@ -42,15 +40,9 @@ private fun storageCommand(exec: (String, Game) -> Game) =
 fun getCommands(): Map<String, Command> = mapOf(
     "NEW" to Command { newBoard() },
     "PLAY" to Play,
-    "EXIT" to Command(isToFinish= true),
-    "SCORE" to Command { showScore(); this },
-    "START" to storageCommand { name, game ->
-        game.also{ st.create(name, it) }
-    },
-    "JOIN" to storageCommand { name, _ ->
-        st.read(name) ?: error("$name not found")
-    },
-    "REFRESH" to storageCommand { name, _ ->
-        st.read(name) ?: error("$name not found")
-    }
+    "EXIT" to Command(isToFinish= true) { exit(); this },
+    "SCORE" to Command { gameRun?.showScore(); this },
+    "START" to storageCommand { start(it) },
+    "JOIN" to storageCommand { join(it) },
+    "REFRESH" to Command { refresh() },
 )

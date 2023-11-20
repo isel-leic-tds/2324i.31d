@@ -42,9 +42,7 @@ fun Game.showScore() {
 }
 
 fun Match.show() {
-    if (this !is MatchRun)
-        println("Match not started")
-    else {
+    if (this is MatchRun) {
         println("Match: $id - $sidePlayer")
         game.show()
     }

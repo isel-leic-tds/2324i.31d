@@ -13,7 +13,7 @@ import pt.isel.tds.ttt.view.*
  * Exceptions are caught and the error message is printed.
  */
 fun main() = MongoDriver("galo").use { driver ->
-    val storage = MongoStorage<String,_>(driver, "games", GameSerializer)
+    val storage = MongoStorage<Name,_>(driver, "games", GameSerializer)
     var match = Match(storage)
     val commands: Map<String, Command> = getCommands()
     while (true) {
