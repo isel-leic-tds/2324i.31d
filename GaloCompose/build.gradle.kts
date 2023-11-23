@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-group = "pt.isel.tds.ttt"
+group = "pt.isel.tds"
 version = "1.0-SNAPSHOT"
 
 repositories {

@@ -7,7 +7,6 @@ import pt.isel.tds.ttt.model.*
  * Implementation using functional programming.
  * @property argsSyntax The syntax of the command arguments.
  * @property isToFinish Indicates if the command finishes the application.
- *
  */
 class Command(
     val argsSyntax:String = "",
