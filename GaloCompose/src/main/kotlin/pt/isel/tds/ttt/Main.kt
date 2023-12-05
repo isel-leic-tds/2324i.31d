@@ -1,6 +1,5 @@
 package pt.isel.tds.ttt
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -10,6 +9,7 @@ import pt.isel.tds.storage.*
 import pt.isel.tds.ttt.model.*
 import pt.isel.tds.ttt.view.*
 import pt.isel.tds.ttt.viewModel.AppViewModel
+import pt.isel.tds.ttt.viewModel.InputName
 
 /**
  * Shows the game.
@@ -21,10 +21,9 @@ fun FrameWindowScope.TicTacToeApp(onExit: () -> Unit, storage: MatchStorage) {
     val vm = remember { AppViewModel(storage) } // ViewModel (state & UI logic)
     MenuBar {
         Menu("Match") {
-            // TODO: Menu
-            Item("Start") {  }
-            Item("Join") {  }
-            Item("Refresh") {  }
+            Item("Start") { vm.readName(InputName.FOR_START) }
+            Item("Join") { vm.readName(InputName.FOR_JOIN) }
+            Item("Refresh") {  }  // TODO: Menu
             Item("Exit", onClick = onExit)
         }
         Menu("Game") {
@@ -37,6 +36,10 @@ fun FrameWindowScope.TicTacToeApp(onExit: () -> Unit, storage: MatchStorage) {
             BoardViewer(vm.board?.moves) { pos -> vm.play(pos) }
             StatusBar(vm.board)
             if (vm.showScore) ScoreViewer(vm.score) { vm.hideScore() }
+            vm.inputName?.let{ InputNameEdit(it,
+                onAction = { name -> vm.startOrJoin(name) },
+                onCancel = { vm.cancelInput() }
+            ) }
         }
     }
 }
