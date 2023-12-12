@@ -19,27 +19,36 @@ import pt.isel.tds.ttt.viewModel.InputName
 @Composable
 fun FrameWindowScope.TicTacToeApp(onExit: () -> Unit, storage: MatchStorage) {
     val vm = remember { AppViewModel(storage) } // ViewModel (state & UI logic)
-    MenuBar {
-        Menu("Match") {
-            Item("Start") { vm.readName(InputName.FOR_START) }
-            Item("Join") { vm.readName(InputName.FOR_JOIN) }
-            Item("Refresh") {  }  // TODO: Menu
-            Item("Exit", onClick = onExit)
-        }
-        Menu("Game") {
-            Item("New Game") { vm.newBoard() }
-            Item("Score") { vm.showScore() }
-        }
-    }
+    AppMenu(vm, onExit)
     MaterialTheme {
         Column {
             BoardViewer(vm.board?.moves) { pos -> vm.play(pos) }
-            StatusBar(vm.board)
-            if (vm.showScore) ScoreViewer(vm.score) { vm.hideScore() }
+            StatusBar(vm.board, vm.sidePlayer)
+            if (vm.showScore) ScoreViewer(vm.score, vm.gameName) { vm.hideScore() }
             vm.inputName?.let{ InputNameEdit(it,
                 onAction = { name -> vm.startOrJoin(name) },
                 onCancel = { vm.cancelInput() }
             ) }
+            vm.message?.let{ MessageDialog(it) { vm.clearMessage() } }
+        }
+    }
+}
+
+@Composable
+fun FrameWindowScope.AppMenu(
+    vm: AppViewModel,
+    onExit: () -> Unit
+) {
+    MenuBar {
+        Menu("Match") {
+            Item("Start") { vm.readName(InputName.FOR_START) }
+            Item("Join") { vm.readName(InputName.FOR_JOIN) }
+            Item("Refresh", enabled = vm.board!=null, onClick = vm::refresh )
+            Item("Exit", onClick = onExit)
+        }
+        Menu("Game") {
+            Item("New Game", enabled = vm.board!=null, onClick = vm::newBoard )
+            Item("Score", enabled = vm.board!=null, onClick = vm::showScore)
         }
     }
 }

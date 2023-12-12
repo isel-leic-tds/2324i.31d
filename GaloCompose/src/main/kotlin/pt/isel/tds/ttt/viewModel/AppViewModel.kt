@@ -18,10 +18,18 @@ class AppViewModel(storage: MatchStorage) {
 
     val board get() = match.let{ (it as? MatchRun)?.game?.board  }
     val score get() = match.let{ (it as MatchRun).game.score  }
+    val sidePlayer get() = (match as? MatchRun)?.sidePlayer
+    val gameName get() = (match as MatchRun).id
 
     fun newBoard() { match = match.newBoard() }
 
-    fun play(pos: Position) { match = match.play(pos) }
+    fun play(pos: Position) {
+        try {
+            match = match.play(pos)
+        }catch (e: IllegalStateException) {
+            message = e.message
+        }
+    }
 
     var showScore by mutableStateOf(false)  // ScoreDialog state
         private set
@@ -40,5 +48,20 @@ class AppViewModel(storage: MatchStorage) {
         else
             match.join(name)
         inputName = null
+    }
+
+    var message by mutableStateOf<String?>(null)  // MessageDialog state
+        private set
+
+    fun clearMessage() { message = null }
+
+    fun refresh() {
+        try {
+            match = match.refresh()
+        }
+        catch (e: NoChangeException) { /* Ignore */   }
+        catch (e: Exception) {
+            message = e.message
+        }
     }
 }

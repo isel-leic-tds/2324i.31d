@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import pt.isel.tds.ttt.model.Name
 import pt.isel.tds.ttt.model.Player
 import pt.isel.tds.ttt.model.Score
 
@@ -21,7 +22,7 @@ fun ScoreViewerPreview() {
         Player.X to 1,
         Player.O to 2,
         null to 3
-    )) {}
+    ), Name("Name")) {}
 }
 
 /**
@@ -30,12 +31,11 @@ fun ScoreViewerPreview() {
  * @param onClose The action to execute when dialog is closed.
  */
 @Composable
-fun ScoreViewer(score: Score, onClose: () -> Unit) = AlertDialog(
-    onDismissRequest = onClose,
-    title = { Text("Score", style = MaterialTheme.typography.h3) },
-    text = {
+fun ScoreViewer(score: Score, gameName: Name, onClose: () -> Unit) = BaseDialog(
+    title = "Score of $gameName",
+    content = {
         Row(
-            Modifier.fillMaxWidth(0.8f).padding(10.dp),
+            Modifier.fillMaxWidth().padding(5.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -48,6 +48,23 @@ fun ScoreViewer(score: Score, onClose: () -> Unit) = AlertDialog(
             }
             Text("Draw - ${score[null]}", style = MaterialTheme.typography.h4)
         }
+    },
+    onClose = onClose
+)
+
+@Composable
+fun MessageDialog(message: String, onClose: () -> Unit) = BaseDialog(
+    title = "Error",
+    content = { Text(message, style = MaterialTheme.typography.h4) },
+    onClose = onClose
+)
+
+@Composable
+fun BaseDialog(title: String, content: @Composable () -> Unit, onClose: () -> Unit, ) = AlertDialog(
+    onDismissRequest = onClose,
+    title = { Text(title, style = MaterialTheme.typography.h3) },
+    text = {
+        content()
     },
     confirmButton = { Button(onClick = onClose) { Text("OK") } }
 )

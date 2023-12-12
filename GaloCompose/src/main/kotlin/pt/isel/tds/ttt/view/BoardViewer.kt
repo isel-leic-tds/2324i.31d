@@ -16,7 +16,7 @@ fun BoardViewerPreview() {
     BoardViewer(Board().play(Position(4)).play(Position(0)).moves) {}
 }
 
-val CELL_DIM = 200.dp
+val CELL_DIM = 150.dp
 val GRID_LINE_DIM = 5.dp
 val BOARD_DIM = GRID_LINE_DIM * (BOARD_SIZE -1) + BOARD_SIZE * CELL_DIM
 

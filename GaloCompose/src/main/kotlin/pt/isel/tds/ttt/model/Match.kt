@@ -95,12 +95,16 @@ fun Match.play(pos: Position) = runOper {
     gameAfter
 }
 
+class NoChangeException : IllegalStateException()
+
 /**
  * Refresh the match state.
  * Check if the board changed.
  */
 fun Match.refresh() = runOper {
-    (ms.read(id) as Game).also { check(it!=game) { "Game not changed" } }
+    (ms.read(id) as Game).also {
+        if (it==game) throw NoChangeException()
+    }
 }
 
 /**

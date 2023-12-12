@@ -16,7 +16,7 @@ fun InputNameEdit(inputName: InputName, onAction: (Name)->Unit, onCancel: () -> 
     var name by remember { mutableStateOf("") }  // Local mutable state
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Name for ${inputName.txt}", style = MaterialTheme.typography.h3) },
+        title = { Text("Name for ${inputName.txt}", style = MaterialTheme.typography.h4) },
         text = {
             OutlinedTextField(
                 value = name, onValueChange = { name = it }, label = { Text("Name") }
